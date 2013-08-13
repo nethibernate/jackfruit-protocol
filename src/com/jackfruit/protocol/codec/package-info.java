@@ -5,4 +5,4 @@
  * @author Administrator
  *
  */
-package com.jackfruit.protocol.core;
+package com.jackfruit.protocol.codec;
