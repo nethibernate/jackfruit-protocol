@@ -17,9 +17,10 @@ import io.netty.handler.codec.ByteToMessageDecoder;
  * | type | message body length | message body | <br>
  * +------+---------------------+--------------+ <br>
  * <br>
- * 1. (1 byte) The type is used to indicate the message function: <br>
- * 2. (2 bytes) The length is indicated the length of the message body <br>
- * 3. The message body is the real body which represents the logic content <br>
+ * 1. (1 byte) The type is used to indicate the message function <br>
+ * 2. (2 byte) The route path which used to route the message <br>
+ * 3. (2 bytes) The length is indicated the length of the message body <br>
+ * 4. The message body is the real body which represents the logic content <br>
  * <br>
  * The message body is usually defined by the back server according to the logic.<br>
  * 
@@ -35,8 +36,9 @@ public class JFInboundMessageDecoder extends ByteToMessageDecoder {
 			List<Object> out) throws Exception {
 		in.markReaderIndex();
 		//there is not enough data for decode.
-		if(in.readableBytes() < 3) return;
+		if(in.readableBytes() < 5) return;
 		int type = in.readByte(); //read the type
+		ByteBuf route = in.readBytes(2);
 		int length = ((in.readByte() | 0)<<8)|in.readByte(); //read the length
 		if(in.readableBytes() < length){
 			//the whole message is not arrived.
@@ -44,7 +46,7 @@ public class JFInboundMessageDecoder extends ByteToMessageDecoder {
 			return;
 		}
 		//decode the message from the bytebuf
-		out.add(new JFInboundMessage(type, in.readBytes(length).array()));
+		out.add(new JFInboundMessage(type, route.array(), in.readBytes(length).array()));
 	}
 	
 }
