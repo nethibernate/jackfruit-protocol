@@ -18,8 +18,7 @@ package com.jackfruit.protocol.message;
  */
 public enum JFMessageType {
 	HAND_SHAKE(1),
-	HAND_SHAKE_ACK(2),
-	LOGIC(3),
+	LOGIC(2),
 	NULL(99),
 	;
 	
